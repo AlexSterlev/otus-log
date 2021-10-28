@@ -32,3 +32,35 @@ type = always
 #args =
 format = string
 ````
+Указываем удалённый сервер в /etc/audisp/audisp-remote.conf
+````
+...
+remote_server = 192.168.11.151
+...
+````
+Перезапускаем службу auditd, rsyslog и nginx. На машине log устанавливается и запускается rsyslog. Прописываем в конфигурации /etc/audit/auditd.conf порт, который слушать.
+````
+...
+tcp_listen_port = 60
+...
+````
+В конфигурации /etc/rsyslog.conf разкомментируем:
+````
+...
+# Provides UDP syslog reception
+$ModLoad imudp
+$UDPServerRun 514
+
+# Provides TCP syslog reception
+$ModLoad imtcp
+$InputTCPServerRun 514
+...
+````
+И укажем куда складываем логи с удалённого хоста:
+````
+...
+$template RemoteLogs,"/var/log/%HOSTNAME%/%PROGRAMNAME%.log"
+...
+````
+Перезапускаем службу auditd и rsyslog.
+Проверяем, что на машину log в /var/log/web складываются все логи с web по nginx, критичные логи и аудита:
