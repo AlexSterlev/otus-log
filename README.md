@@ -71,3 +71,25 @@ $template RemoteLogs,"/var/log/%HOSTNAME%/%PROGRAMNAME%.log"
 ````
 Перезапускаем службу auditd и rsyslog.
 Проверяем, что на машину log в /var/log/web складываются все логи с web по nginx, критичные логи и аудита:
+````
+[root@log web]# tail -f nginx.log
+Oct 28 08:37:37 web nginx: 192.168.11.151 - - [28/Oct/2021:08:37:37 +0000] "GET / HTTP/1.1" 200 4833 "-" "curl/7.29.0" "-"
+Oct 28 08:37:41 web nginx: 2021/10/28 08:37:41 [error] 5629#0: *10 open() "/usr/share/nginx/html/asd" failed (2: No such file or directory), client: 192.168.11.151, server: _, request: "GET /asd HTTP/1.1", host: "192.168.11.150"
+Oct 28 08:37:41 web nginx: 192.168.11.151 - - [28/Oct/2021:08:37:41 +0000] "GET /asd HTTP/1.1" 404 3650 "-" "curl/7.29.0" "-"
+Oct 28 09:06:49 web nginx: 192.168.11.151 - - [28/Oct/2021:09:06:49 +0000] "GET / HTTP/1.1" 200 4833 "-" "curl/7.29.0" "-"
+Oct 28 09:06:56 web nginx: 2021/10/28 09:06:56 [error] 5629#0: *14 open() "/usr/share/nginx/html/aswe" failed (2: No such file or directory), client: 192.168.11.151, server: _, request: "GET /aswe HTTP/1.1", host: "192.168.11.150"
+Oct 28 09:06:56 web nginx: 192.168.11.151 - - [28/Oct/2021:09:06:56 +0000] "GET /aswe HTTP/1.1" 404 3650 "-" "curl/7.29.0" "-"
+Oct 28 09:22:10 web nginx: 2021/10/28 09:22:10 [error] 5629#0: *19 open() "/usr/share/nginx/html/ddd" failed (2: No such file or directory), client: 192.168.11.151, server: _, request: "GET /ddd HTTP/1.1", host: "192.168.11.150"
+Oct 28 09:22:10 web nginx: 192.168.11.151 - - [28/Oct/2021:09:22:10 +0000] "GET /ddd HTTP/1.1" 404 3650 "-" "curl/7.29.0" "-"
+Oct 28 09:22:30 web nginx: 2021/10/28 09:22:30 [error] 5629#0: *20 open() "/usr/share/nginx/html/ddds" failed (2: No such file or directory), client: 192.168.11.151, server: _, request: "GET /ddds HTTP/1.1", host: "192.168.11.150"
+Oct 28 09:22:30 web nginx: 192.168.11.151 - - [28/Oct/2021:09:22:30 +0000] "GET /ddds HTTP/1.1" 404 3650 "-" "curl/7.29.0" "-"
+````
+
+````
+[root@log web]# tail -f sudo.log
+Oct 28 08:32:22 web sudo: vagrant : TTY=pts/0 ; PWD=/home/vagrant ; USER=root ; COMMAND=/bin/cat /var/log/nginx/error.log
+Oct 28 08:32:29 web sudo: vagrant : TTY=pts/0 ; PWD=/home/vagrant ; USER=root ; COMMAND=/bin/cat /var/log/nginx/acceas.log
+Oct 28 08:32:34 web sudo: vagrant : TTY=pts/0 ; PWD=/home/vagrant ; USER=root ; COMMAND=/bin/cat /var/log/nginx/access.log
+Oct 28 08:35:05 web sudo: vagrant : TTY=pts/0 ; PWD=/home/vagrant ; USER=root ; COMMAND=/bin/cd /var/log/nginx/
+Oct 28 09:10:58 web sudo: vagrant : TTY=pts/0 ; PWD=/var/log ; USER=root ; COMMAND=/bin/yum install mc -y
+````
